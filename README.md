@@ -21,6 +21,7 @@ python ld_manager.py
 ## Cách dùng
 1. **Thư mục LDPlayer**: trỏ tới thư mục chứa `ldconsole.exe` (mặc định LD4: `C:\LDPlayer\LDPlayer4.0`), bấm **Lưu**.
 2. Chọn tab trong danh sách (giữ **Ctrl/Shift** để chọn nhiều, hoặc bấm **Chọn tất cả**).
+   - **Chọn từ tab # … đến tab # …**: nhập 2 số rồi bấm **Chọn** (hoặc Enter). **Thêm vào chọn** để gộp nhiều khoảng, **Bỏ chọn** để xóa hết.
 3. **Bật / Tắt / Khởi động lại / Xếp cửa sổ** các tab đã chọn.
 4. **Mở Chrome**: mở app Chrome trên các tab đã chọn.
 5. **Mở link**: nhập link (hoặc chọn link đã lưu), bấm **Mở link trên tab đã chọn**.

@@ -171,6 +171,26 @@ class App(tk.Tk):
         ]:
             ttk.Button(ctl, text=text, command=cmd).pack(side="left", padx=2)
 
+        # Chọn nhanh theo khoảng số tab
+        rng = ttk.Frame(self)
+        rng.pack(fill="x", **pad)
+        ttk.Label(rng, text="Chọn từ tab #").pack(side="left")
+        self.from_var = tk.StringVar(value="0")
+        self.to_var = tk.StringVar(value="0")
+        from_box = ttk.Spinbox(rng, from_=0, to=9999, width=6, textvariable=self.from_var)
+        from_box.pack(side="left", padx=2)
+        ttk.Label(rng, text="đến tab #").pack(side="left")
+        to_box = ttk.Spinbox(rng, from_=0, to=9999, width=6, textvariable=self.to_var)
+        to_box.pack(side="left", padx=2)
+        ttk.Button(rng, text="Chọn", command=lambda: self.select_range(add=False)).pack(side="left", padx=2)
+        ttk.Button(rng, text="Thêm vào chọn", command=lambda: self.select_range(add=True)).pack(side="left", padx=2)
+        ttk.Button(rng, text="Bỏ chọn", command=self.clear_selection).pack(side="left", padx=2)
+        self.sel_count = ttk.Label(rng, text="Đã chọn: 0")
+        self.sel_count.pack(side="right")
+        for box in (from_box, to_box):
+            box.bind("<Return>", lambda e: self.select_range(add=False))
+        self.tree.bind("<<TreeviewSelect>>", lambda e: self.update_count())
+
         # Chrome + link
         web = ttk.LabelFrame(self, text="Chrome")
         web.pack(fill="x", **pad)
@@ -269,6 +289,28 @@ class App(tk.Tk):
 
     def select_all(self):
         self.tree.selection_set(self.tree.get_children())
+
+    def clear_selection(self):
+        self.tree.selection_remove(self.tree.selection())
+
+    def update_count(self):
+        self.sel_count.configure(text=f"Đã chọn: {len(self.tree.selection())}")
+
+    def select_range(self, add=False):
+        try:
+            a, b = int(self.from_var.get()), int(self.to_var.get())
+        except ValueError:
+            messagebox.showinfo("Javis", "Hãy nhập số tab (ví dụ: từ 0 đến 10).")
+            return
+        lo, hi = min(a, b), max(a, b)
+        items = [i for i in self.tree.get_children()
+                 if lo <= int(self.tree.set(i, "index")) <= hi]
+        if not add:
+            self.clear_selection()
+        self.tree.selection_add(items)
+        if items:
+            self.tree.see(items[0])
+        self.log(f"Chọn tab #{lo} → #{hi}: {len(items)} tab")
 
     def open_chrome(self):
         pkg = self.cfg["chrome_package"]
